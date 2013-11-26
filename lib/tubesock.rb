@@ -22,7 +22,16 @@ class Tubesock
       socket = env['rack.hijack_io']
 
       handshake = WebSocket::Handshake::Server.new
-      handshake.from_rack env
+      @headers = env.select {|key, value|
+        key =~ /\AHTTP_/
+      }.inject({}) {|memo, tuple|
+        key, value = tuple
+        memo[key.gsub(/\AHTTP_/, '').gsub('_', '-').downcase] = value
+        memo
+      }
+
+      @path      = env["REQUEST_PATH"]
+      @query     = env["QUERY_STRING"]
 
       socket.write handshake.to_s
 
