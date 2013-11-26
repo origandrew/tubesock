@@ -22,7 +22,7 @@ class Tubesock
       socket = env['rack.hijack_io']
 
       handshake = WebSocket::Handshake::Server.new
-      logger.debug env
+      puts env
       handshake.from_rack env
 
       socket.write handshake.to_s
